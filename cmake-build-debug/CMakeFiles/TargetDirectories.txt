@@ -1,0 +1,3 @@
+/Users/erensonmez/Desktop/coding/school_assigment3/cmake-build-debug/CMakeFiles/school_assigment3.dir
+/Users/erensonmez/Desktop/coding/school_assigment3/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/erensonmez/Desktop/coding/school_assigment3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
