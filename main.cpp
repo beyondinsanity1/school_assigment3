@@ -11,6 +11,7 @@
 
 using namespace std;
 
+
 class player{
 private:
     int HP;
@@ -19,13 +20,14 @@ private:
     int potionCount {1};
 public:
     player(int theHP);
-    int playerWeaponAttack();
+    int weaponAttack();
     void setHP(int);
     int getHP();
     void heal();
     int increaseWpnModifier();
     int getWpnModifier();
 };
+
 
 class enemy{
 private:
@@ -37,12 +39,15 @@ public:
     void setEnemyHP(int);
 };
 
+
 player myPlayer(150);
 enemy enemy(300);
+
 
 player::player(int theHP){
     HP = theHP;
 }
+
 
 void player::heal() {
     if (myPlayer.potionCount > 0) {
@@ -63,62 +68,82 @@ void player::heal() {
     }
 }
 
+
 int player::increaseWpnModifier(){
     weaponModifier += 1;
     return weaponModifier;
 }
 
+
 int player::getWpnModifier() {
     return weaponModifier;
 }
 
- void player::setHP(int theHP) {
-     HP = theHP;
- }
 
- int player::getHP() {
-     return HP;
- }
+void player::setHP(int theHP) {
+    HP = theHP;
+}
 
- int player::playerWeaponAttack() {
-     int upper = 10;
-     int lower = 5;
-     int weaponAttackValue = (rand()%(upper - lower + 1) + lower);
-     weaponAttackValue = weaponAttackValue * weaponModifier;
-     return weaponAttackValue;
- }
 
+int player::getHP() {
+    return HP;
+}
+
+
+int player::weaponAttack() {
+    int playerDamage;
+    int enemyHP;
+    int weaponAttackValue = (rand()%(10 - 5 + 1) + 5);
+    weaponAttackValue = weaponAttackValue * weaponModifier;
+    playerDamage = weaponAttackValue;
+    enemyHP = enemy.getEnemyHP();
+    enemyHP -= playerDamage;
+    enemy.setEnemyHP(enemyHP);
+
+    cout << "You dealt "<< playerDamage << " points of damage to your enemy! Your enemy now has " << enemyHP <<" HP."<<endl;
+}
 
 
 enemy::enemy(int theHP) {
     enemyHP = theHP;
 }
 
+
 int enemy::getEnemyHP() {
     return enemyHP;
 }
 
-int enemy::enemyAttack() {
-    int upper = 20;
-    int lower = 10;
-    int enemyAttackValue = (rand()%(upper - lower + 1) + lower);
 
-    if (enemyAttackValue == 13 || 17){
+int enemy::enemyAttack() {
+    int enemyAttackValue = (rand()%(20 - 10 + 1) + 10);
+    cout << "enemy rolled " << enemyAttackValue <<endl;
+    int playerHP {0};
+    if (enemyAttackValue == 13 || enemyAttackValue == 17){
         enemyAttackValue = 0;
     }
 
-    return enemyAttackValue;
+    playerHP = myPlayer.getHP();
+    playerHP  -= enemyAttackValue;
+    myPlayer.setHP(playerHP);
+
+    if(enemyAttackValue == 0){
+    cout << "Your enemy missed you and dealt 0 damage!" << endl;
+    }
+    cout << "Your enemy dealt you " << enemyAttackValue << " damage! You now have " << playerHP << " HP." << endl;
+
+    return 0;
 }
 
+
 int randomAction(){
-    int a = 1+ (rand()%4) ;
+    int a = 1+ (rand()%4);
     if (a == 1 || a == 4){
         cout << "Nothing Happened!?" << endl;
     } else if (a == 2){
         myPlayer.heal();
     }else if (a == 3){
         myPlayer.increaseWpnModifier();
-        cout << "your new weapon deals x" << myPlayer.getWpnModifier() << " damage!" << endl;
+        cout << "Your weapon now deals x" << myPlayer.getWpnModifier() << " damage!" << endl;
     }
 }
 
@@ -126,22 +151,15 @@ void enemy::setEnemyHP(int theHP) {
     enemyHP = theHP;
 }
 
-int weaponAttack(){
-    int playerDamage;
-    int enemyHP;
-    playerDamage = myPlayer.playerWeaponAttack();
-    enemyHP = enemy.getEnemyHP();
-    enemyHP -= playerDamage;
-    enemy.setEnemyHP(enemyHP);
-
-    cout << "You dealt "<< playerDamage << " points of damage! Your enemy now has " << enemyHP <<" HP.";
-}
-
 
 int game(){
     int userTurnInput;
 
     while (enemy.getEnemyHP() > 0 || myPlayer.getHP() > 0){
+
+
+        //PLAYER TURN////////////////////////////
+        cout << "YOUR TURN!    ////////////////////////////" << endl;
         cout << "Choose your action!\n"
                 "1) Random Action\n"
                 "2) Weapon Attack"<<endl;
@@ -150,8 +168,12 @@ int game(){
         if (userTurnInput == 1 ){
             randomAction();
         } else if (userTurnInput == 2) {
-            weaponAttack();
+            myPlayer.weaponAttack();
         }
+
+        //ENEMY TURN////////////////////////////
+        cout << "ENEMY TURN!    ////////////////////////////" <<endl;
+        enemy.enemyAttack();
     }
 
 };
