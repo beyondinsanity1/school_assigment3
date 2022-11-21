@@ -263,7 +263,7 @@ return 0;
 }
 
 int main(){
-    random_device rd;
+    srand (time(NULL));
     menu();
 
 }
