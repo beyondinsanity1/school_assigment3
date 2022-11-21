@@ -104,6 +104,7 @@ int player::weaponAttack() {
 }
 
 
+
 enemy::enemy(int theHP) {
     enemyHP = theHP;
 }
@@ -157,7 +158,7 @@ int game(){
 
     while (enemy.getEnemyHP() > 0 || myPlayer.getHP() > 0){
 
-
+        cout << "Your HP: " << myPlayer.getHP() << "   Enemy HP: " << enemy.getEnemyHP() << endl;
         //PLAYER TURN////////////////////////////
         cout << "YOUR TURN!    ////////////////////////////" << endl;
         cout << "Choose your action!\n"
