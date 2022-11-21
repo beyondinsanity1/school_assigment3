@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
-#include <time.h>
+#include <ctime>
+#include <random>
 
 
 // note Nov 17 2022 | 02:01 AM : all there is to do is to:
@@ -26,6 +27,8 @@ public:
     void heal();
     int increaseWpnModifier();
     int getWpnModifier();
+    void setPlayerName(string theName);
+    basic_string<char, char_traits<char>, allocator<char>> getPlayerName();
 };
 
 
@@ -34,7 +37,7 @@ private:
     int enemyHP;
 public:
     enemy(int theHP);
-    int enemyAttack();
+    void enemyAttack();
     int getEnemyHP();
     void setEnemyHP(int);
 };
@@ -46,6 +49,14 @@ enemy enemy(300);
 
 player::player(int theHP){
     HP = theHP;
+}
+
+void player::setPlayerName(string theName){
+    playerName = theName;
+}
+
+basic_string<char, char_traits<char>, allocator<char>> player::getPlayerName() {
+    return playerName;
 }
 
 
@@ -115,7 +126,7 @@ int enemy::getEnemyHP() {
 }
 
 
-int enemy::enemyAttack() {
+void enemy::enemyAttack() {
     int enemyAttackValue = (rand()%(20 - 10 + 1) + 10);
     cout << "enemy rolled " << enemyAttackValue <<endl;
     int playerHP {0};
@@ -128,11 +139,9 @@ int enemy::enemyAttack() {
     myPlayer.setHP(playerHP);
 
     if(enemyAttackValue == 0){
-    cout << "Your enemy missed you and dealt 0 damage!" << endl;
+    cout << "Your enemy missed and dealt 0 damage!" << endl;
     }
     cout << "Your enemy dealt you " << enemyAttackValue << " damage! You now have " << playerHP << " HP." << endl;
-
-    return 0;
 }
 
 
@@ -146,6 +155,7 @@ int randomAction(){
         myPlayer.increaseWpnModifier();
         cout << "Your weapon now deals x" << myPlayer.getWpnModifier() << " damage!" << endl;
     }
+    return 0;
 }
 
 void enemy::setEnemyHP(int theHP) {
@@ -155,28 +165,85 @@ void enemy::setEnemyHP(int theHP) {
 
 int game(){
     int userTurnInput;
+    bool playerLost {0};
+    bool enemyLost {0};
+    string name;
 
-    while (enemy.getEnemyHP() > 0 || myPlayer.getHP() > 0){
+    cout << "What's your name?" << endl;
+    cin >> name;
+    myPlayer.setPlayerName(name);
 
-        cout << "Your HP: " << myPlayer.getHP() << "   Enemy HP: " << enemy.getEnemyHP() << endl;
-        //PLAYER TURN////////////////////////////
-        cout << "YOUR TURN!    ////////////////////////////" << endl;
-        cout << "Choose your action!\n"
-                "1) Random Action\n"
-                "2) Weapon Attack"<<endl;
-        cin >> userTurnInput;
+    while (!playerLost && !enemyLost){
+        int playerHP {myPlayer.getHP()};
+        int enemyHP {enemy.getEnemyHP()};
 
-        if (userTurnInput == 1 ){
-            randomAction();
-        } else if (userTurnInput == 2) {
-            myPlayer.weaponAttack();
+        if(playerHP <= 0){
+            playerLost = 1;
+        }else if (enemyHP <= 0){
+            enemyLost = 1;
         }
 
-        //ENEMY TURN////////////////////////////
-        cout << "ENEMY TURN!    ////////////////////////////" <<endl;
-        enemy.enemyAttack();
-    }
+        if (!playerLost && !enemyLost) {
+            cout << myPlayer.getPlayerName() << "'s HP: " << playerHP << "   Enemy's HP: " << enemyHP << endl;
+            //PLAYER TURN////////////////////////////
+            cout << "YOUR TURN!    ////////////////////////////" << endl;
+            cout << "Choose your action!\n"
+                    "1) Random Action\n"
+                    "2) Weapon Attack" << endl;
+            cin >> userTurnInput;
 
+            if (userTurnInput == 1) {
+                randomAction();
+            } else if (userTurnInput == 2) {
+                myPlayer.weaponAttack();
+            }
+
+            //ENEMY TURN////////////////////////////
+            cout << "ENEMY TURN!    ////////////////////////////" << endl;
+            enemy.enemyAttack();
+
+        }else if (playerLost){
+            cout << "///////////////////////////////////////\n"
+                    "You lost! Get Gud!" <<endl;
+
+//            cout << "Want to play again?" << endl;
+//            cout << "1) PLAY AGAIN \n"
+//                    "2) EXIT" <<endl;
+//            cin >> userTurnInput;
+//            if (userTurnInput == 1){
+//                playerLost = false;
+//                enemyLost = false;
+//                game();
+//            }else if (userTurnInput){
+//                EXIT_SUCCESS;
+//            }else{
+//                cout << "Unknown input!" << endl;
+//            }
+
+        }else if (enemyLost){
+            cout << "///////////////////////////////////////\n"
+                    "YOU WON!\n"
+                    "HERE'S A MEDAL!\n"
+                    " _______________\n"
+                    "|@@@@|     |####|\n"
+                    "|@@@@|     |####|\n"
+                    "|@@@@|     |####|\n"
+                    "\\@@@@|     |####/\n"
+                    " \\@@@|     |###/\n"
+                    "  `@@|_____|##'\n"
+                    "       (O)\n"
+                    "    .-'''''-.\n"
+                    "  .'  * * *  `.\n"
+                    " :  *       *  :\n"
+                    ": ~N O B O D Y~ :\n"
+                    ": ~ C A R E S ~ :\n"
+                    " :  *       *  :\n"
+                    "  `.  * * *  .'\n"
+                    "    `-.....-'" << endl;
+        }
+
+    }
+    return 0;
 };
 
 int menu (){
@@ -192,10 +259,11 @@ int menu (){
     }else if (userMenuInput == 2){
         return 0;
     }
+return 0;
 }
 
 int main(){
-    srand (time(NULL));
+    random_device rd;
     menu();
 
 }
