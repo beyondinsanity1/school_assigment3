@@ -70,7 +70,7 @@ void player::heal() {
             newHp = 200;
             cout << "Your HP is maxed! You have 200 HP!" << endl;
         }
-        cout << "You drank a potion and restored 25HP9!"
+        cout << "You drank a potion and restored 25HP!"
                 "\nYour new HP is " << newHp << endl;
         myPlayer.setHP(newHp);
         myPlayer.potionCount -= 1;
